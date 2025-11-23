@@ -23,8 +23,20 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Departments
+    Route::resource('departments', \App\Http\Controllers\Admin\DepartmentController::class);
+    
+    // Courses
+    Route::resource('courses', \App\Http\Controllers\Admin\CourseController::class);
+    
+    // Faculty
+    Route::resource('faculty', \App\Http\Controllers\Admin\FacultyController::class);
+    
+    // Course Assignments
+    Route::resource('assignments', \App\Http\Controllers\Admin\CourseAssignmentController::class)->only(['index', 'create', 'store', 'destroy']);
 });
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
