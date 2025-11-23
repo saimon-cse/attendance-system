@@ -28,5 +28,7 @@ class DatabaseSeeder extends Seeder
         ]);
         
         // We don't need to seed students here as the enroll endpoint will create them
+        
+        $this->call(RoleSeeder::class);
     }
 }
