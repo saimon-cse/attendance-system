@@ -85,4 +85,75 @@ class FaceRecognitionController extends Controller
             ], 500);
         }
     }
+
+    public function identify(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|max:10240',
+        ]);
+
+        // 1. Get embedding from Python service
+        $result = $this->faceService->getEmbedding($request->file('image'));
+
+        if (!$result || isset($result['message'])) {
+            return response()->json([
+                'error' => 'Could not extract face embedding',
+                'python_response' => $result
+            ], 400);
+        }
+
+        $inputEmbedding = $result['embedding'];
+        $bestMatch = null;
+        $highestSimilarity = -1;
+        $threshold = 0.5; // Similarity threshold (adjustable)
+
+        // 2. Fetch all face samples (Optimize this for production!)
+        // In production, use a vector DB or raw SQL cosine similarity if supported
+        $samples = \App\Models\FaceSample::with('student')->get();
+
+        foreach ($samples as $sample) {
+            $storedEmbedding = json_decode($sample->face_encoding);
+            
+            // Calculate Cosine Similarity
+            $similarity = $this->calculateSimilarity($inputEmbedding, $storedEmbedding);
+
+            if ($similarity > $highestSimilarity) {
+                $highestSimilarity = $similarity;
+                $bestMatch = $sample;
+            }
+        }
+
+        if ($highestSimilarity > $threshold && $bestMatch) {
+            return response()->json([
+                'message' => 'Face identified',
+                'student' => $bestMatch->student,
+                'similarity' => $highestSimilarity,
+                'bbox' => $result['bbox']
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Unknown person',
+            'similarity' => $highestSimilarity,
+            'bbox' => $result['bbox']
+        ]);
+    }
+
+    private function calculateSimilarity($vecA, $vecB)
+    {
+        // Dot product
+        $dotProduct = 0;
+        $normA = 0;
+        $normB = 0;
+
+        foreach ($vecA as $i => $val) {
+            $dotProduct += $val * $vecB[$i];
+            $normA += $val * $val;
+            $normB += $vecB[$i] * $vecB[$i];
+        }
+
+        if ($normA == 0 || $normB == 0) return 0;
+
+        return $dotProduct / (sqrt($normA) * sqrt($normB));
+    }
 }

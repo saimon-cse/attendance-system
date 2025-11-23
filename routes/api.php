@@ -11,4 +11,5 @@ Route::get('/user', function (Request $request) {
 Route::prefix('face')->group(function () {
     Route::post('/detect', [FaceRecognitionController::class, 'detect']);
     Route::post('/enroll', [FaceRecognitionController::class, 'enroll']);
+    Route::post('/identify', [FaceRecognitionController::class, 'identify']);
 });
