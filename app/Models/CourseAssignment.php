@@ -12,15 +12,12 @@ class CourseAssignment extends Model
     protected $fillable = [
         'course_id',
         'faculty_id',
-        'session_year',
+        'academic_year',
         'semester',
         'section',
-        'is_active'
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
+    protected $casts = [];
 
     public function course()
     {
@@ -30,5 +27,10 @@ class CourseAssignment extends Model
     public function faculty()
     {
         return $this->belongsTo(Faculty::class);
+    }
+
+    public function attendanceSessions()
+    {
+        return $this->hasMany(AttendanceSession::class);
     }
 }

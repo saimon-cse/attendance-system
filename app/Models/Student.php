@@ -19,8 +19,23 @@ class Student extends Model
         'last_face_update' => 'datetime',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
     public function faceSamples()
     {
         return $this->hasMany(FaceSample::class);
+    }
+
+    public function courseEnrollments()
+    {
+        return $this->hasMany(StudentCourseEnrollment::class);
     }
 }

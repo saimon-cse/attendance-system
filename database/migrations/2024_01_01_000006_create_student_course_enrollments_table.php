@@ -18,8 +18,8 @@ return new class extends Migration
             // Enrollment Details
             $table->string('academic_year', 10);
             $table->enum('semester', ['odd', 'even', 'summer']);
-            $table->date('enrollment_date');
-            $table->enum('enrollment_status', ['enrolled', 'dropped', 'completed', 'failed', 'withdrawn'])->default('enrolled');
+            // $table->date('enrollment_date');
+            // $table->enum('enrollment_status', ['enrolled', 'dropped', 'completed', 'failed', 'withdrawn'])->default('enrolled');
 
             // Section/Batch Assignment
             $table->string('section')->nullable();
@@ -28,15 +28,15 @@ return new class extends Migration
             // Grades
             $table->decimal('internal_marks', 5, 2)->nullable();
             $table->decimal('external_marks', 5, 2)->nullable();
-            $table->decimal('total_marks', 5, 2)->nullable();
-            $table->string('grade', 2)->nullable(); // A+, A, B+, etc.
-            $table->decimal('grade_points', 3, 2)->nullable();
-            $table->enum('result_status', ['pass', 'fail', 'absent', 'pending'])->nullable();
+            // $table->decimal('total_marks', 5, 2)->nullable();
+            // $table->string('grade', 2)->nullable(); // A+, A, B+, etc.
+            // $table->decimal('grade_points', 3, 2)->nullable();
+            // $table->enum('result_status', ['pass', 'fail', 'absent', 'pending'])->nullable();
 
             // Attendance Statistics
-            $table->integer('total_classes')->default(0);
-            $table->integer('classes_attended')->default(0);
-            $table->decimal('attendance_percentage', 5, 2)->default(0);
+            // $table->integer('total_classes')->default(0);
+            // $table->integer('classes_attended')->default(0);
+            // $table->decimal('attendance_percentage', 5, 2)->default(0);
 
             $table->timestamps();
 
@@ -44,9 +44,9 @@ return new class extends Migration
             $table->unique(['student_id', 'course_id', 'academic_year', 'semester'], 'sce_student_course_unique');
 
             // Indexes
-            $table->index(['student_id', 'academic_year', 'semester'], 'sce_student_year_sem_idx');
-            $table->index(['course_id', 'academic_year', 'semester'], 'sce_course_year_sem_idx');
-            $table->index('enrollment_status', 'sce_enroll_status_idx');
+            // $table->index(['student_id', 'academic_year', 'semester'], 'sce_student_year_sem_idx');
+            // $table->index(['course_id', 'academic_year', 'semester'], 'sce_course_year_sem_idx');
+            // $table->index('enrollment_status', 'sce_enroll_status_idx');
         });
     }
 

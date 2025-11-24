@@ -9,22 +9,35 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    @if ($errors->any())
+                        <div class="mb-4 p-4 bg-red-600 text-white rounded-lg">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <form action="{{ route('admin.assignments.store') }}" method="POST" class="space-y-4">
                         @csrf
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-300">Course</label>
                                 <select name="course_id" class="mt-1 block w-full bg-gray-900 border-gray-700 rounded-md shadow-sm text-gray-100" required>
+                                    <option value="">Select Course</option>
                                     @foreach($courses as $course)
-                                        <option value="{{ $course->id }}">{{ $course->course_code }} - {{ $course->name }}</option>
+                                        <option value="{{ $course->id }}" {{ (isset($selectedCourseId) && $selectedCourseId == $course->id) ? 'selected' : '' }}>
+                                            {{ $course->course_code }} - {{ $course->course_name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-300">Faculty</label>
                                 <select name="faculty_id" class="mt-1 block w-full bg-gray-900 border-gray-700 rounded-md shadow-sm text-gray-100" required>
+                                    <option value="">Select Faculty</option>
                                     @foreach($faculties as $faculty)
-                                        <option value="{{ $faculty->id }}">{{ $faculty->user->name }} ({{ $faculty->designation }})</option>
+                                        <option value="{{ $faculty->id }}">{{ $faculty->user->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

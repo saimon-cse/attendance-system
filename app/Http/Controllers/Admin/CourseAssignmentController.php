@@ -16,11 +16,12 @@ class CourseAssignmentController extends Controller
         return view('admin.assignments.index', compact('assignments'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $courses = Course::all();
         $faculties = Faculty::with('user')->get();
-        return view('admin.assignments.create', compact('courses', 'faculties'));
+        $selectedCourseId = $request->query('course_id');
+        return view('admin.assignments.create', compact('courses', 'faculties', 'selectedCourseId'));
     }
 
     public function store(Request $request)
@@ -33,7 +34,13 @@ class CourseAssignmentController extends Controller
             'section' => 'required|string',
         ]);
 
-        CourseAssignment::create($request->all());
+        CourseAssignment::create([
+            'course_id' => $request->course_id,
+            'faculty_id' => $request->faculty_id,
+            'academic_year' => $request->session_year,
+            'semester' => $request->semester,
+            'section' => $request->section,
+        ]);
 
         return redirect()->route('admin.assignments.index')->with('success', 'Course assigned successfully.');
     }

@@ -37,10 +37,21 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     // Course Assignments
     Route::resource('assignments', \App\Http\Controllers\Admin\CourseAssignmentController::class)->only(['index', 'create', 'store', 'destroy']);
+    
+    // Students
+    Route::resource('students', \App\Http\Controllers\Admin\StudentController::class);
+    Route::post('students/{student}/enroll-face', [\App\Http\Controllers\Admin\StudentController::class, 'enrollFace'])->name('students.enroll-face');
+    
+    // Student Course Enrollments
+    Route::resource('enrollments', \App\Http\Controllers\Admin\StudentEnrollmentController::class)->only(['index', 'create', 'store', 'destroy']);
 });
 
-Route::middleware(['auth', 'role:teacher'])->group(function () {
-    Route::get('/teacher/dashboard', [TeacherController::class, 'dashboard'])->name('teacher.dashboard');
+Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {
+    Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('dashboard');
+    Route::get('/sessions/create', [TeacherController::class, 'createSession'])->name('sessions.create');
+    Route::post('/sessions', [TeacherController::class, 'storeSession'])->name('sessions.store');
+    Route::get('/sessions/{session}', [TeacherController::class, 'showSession'])->name('sessions.show');
+    Route::post('/sessions/{session}/mark', [TeacherController::class, 'markAttendance'])->name('sessions.mark');
 });
 
 Route::middleware(['auth', 'role:student'])->group(function () {

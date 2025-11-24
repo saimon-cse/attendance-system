@@ -30,12 +30,23 @@
                                 <td class="p-3 border-b border-gray-700">{{ $course->department->name }}</td>
                                 <td class="p-3 border-b border-gray-700">{{ $course->credits ?? '-' }}</td>
                                 <td class="p-3 border-b border-gray-700">
-                                    <a href="{{ route('admin.courses.edit', $course) }}" class="text-blue-400 hover:underline mr-2">Edit</a>
-                                    <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-400 hover:underline" onclick="return confirm('Are you sure?')">Delete</button>
-                                    </form>
+                                    <div class="flex space-x-2">
+                                        <a href="{{ route('admin.courses.edit', $course) }}" class="text-blue-400 hover:underline">Edit</a>
+                                        
+                                        <a href="{{ route('admin.assignments.create', ['course_id' => $course->id]) }}" class="text-purple-400 hover:underline" title="Assign Teacher">
+                                            Assign Teacher
+                                        </a>
+                                        
+                                        <a href="{{ route('admin.enrollments.create', ['course_id' => $course->id]) }}" class="text-green-400 hover:underline" title="Enroll Student">
+                                            Enroll Student
+                                        </a>
+
+                                        <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-400 hover:underline" onclick="return confirm('Are you sure?')">Delete</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach
